@@ -75,8 +75,9 @@ class SiglentSDS3104X_DataAcquisition:
             
             # 设置波形参数为ASCII格式
             self.scope.write('WFSU SP,1,NP,0,FP,0')  # 设置波形参数
-            
+            resolution_type=self.scope.query('ACQ:TYPE? ')
             # 获取波形数据
+            self.scope.write('WAV:WIDT WORD')
             self.scope.write(f'C{channel}:WF? DAT2')  # 请求波形数据
             
             # 读取波形数据
@@ -96,23 +97,28 @@ class SiglentSDS3104X_DataAcquisition:
             data_start = start_idx + 2 + header_length
             data_bytes = raw_data[data_start:data_start + data_length]
             
-            # 将字节数据转换为数值数组
-            # SDS3000X HD系列使用8位有符号整数
-            data_array = np.frombuffer(data_bytes, dtype=np.int8)
+            
             
             # 获取波形参数以进行缩放
             vdiv = float(self.scope.query(f'C{channel}:VOLT_DIV?'))
             offset = float(self.scope.query(f'C{channel}:OFFSET?'))
             probe = float(self.scope.query(f'CHAN{channel}:PROB? '))
-            
-            # 获取时间参数
+       
+            # 获取时间参数 
             tdiv = float(self.scope.query('TIM:SCAL? '))
             delay = float(self.scope.query('TIM:DEL?'))
             sample_rate = float(self.scope.query('ACQ:SRAT?'))
+            width= self.scope.query('WAV:WIDT?')
+            print(width)
             
+            
+
+            # 将字节数据转换为数值数组
+            # SDS3000X HD系列使用8位有符号整数
+            data_array = np.frombuffer(data_bytes, dtype=np.int16)
             # 计算实际电压值
-            # SDS3000X HD的垂直分辨率是10位（1024点）
-            vertical_resolution = 1024
+            # SDS3000X HD的高分辨率模式数据为16位（65536点）
+            vertical_resolution = 65536
             voltage_data = (data_array / vertical_resolution) * (vdiv * 8) *probe - offset
             
             # 计算时间轴
