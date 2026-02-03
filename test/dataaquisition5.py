@@ -43,24 +43,24 @@ class SiglentSDS3104X_DataAcquisition:
         """设置采集参数（使用当前触发和采集方式）"""
         try:
             # 获取当前设置（不改变示波器当前配置）
-            print("使用示波器当前触发和采集设置...")
+            """ print("使用示波器当前触发和采集设置...") """
             
             # 获取当前时间基准设置
             timebase = self.scope.query('TIM:SCAL?')
-            print(f"当前时基: {timebase} s/div")
+            """ print(f"当前时基: {timebase} s/div") """
             
             # 获取通道设置
             for ch in [1, 2]:
                 scale = self.scope.query(f'C{ch}:VOLT_DIV?')
                 offset = self.scope.query(f'C{ch}:OFFSET?')
                 coupling = self.scope.query(f'C{ch}:COUPLING?')
-                print(f"通道{ch}: 垂直刻度={scale} V/div, 偏移={offset} V, 耦合={coupling}")
+                """ print(f"通道{ch}: 垂直刻度={scale} V/div, 偏移={offset} V, 耦合={coupling}") """
             
             # 获取触发设置
             trigger_source = self.scope.query('TRIG:EDGE:SOUR?')
             trigger_level = self.scope.query('TRIG:EDGE:LEV?')
-            print(f"触发源: {trigger_source}, 触发电平: {trigger_level} V")
-            
+            """ print(f"触发源: {trigger_source}, 触发电平: {trigger_level} V")
+             """
             return True
         except Exception as e:
             print(f"设置采集参数失败: {e}")
@@ -108,8 +108,8 @@ class SiglentSDS3104X_DataAcquisition:
             tdiv = float(self.scope.query('TIM:SCAL? '))
             delay = float(self.scope.query('TIM:DEL?'))
             sample_rate = float(self.scope.query('ACQ:SRAT?'))
-            width= self.scope.query('WAV:WIDT?')
-            print(width)
+            """  width= self.scope.query('WAV:WIDT?')
+            print(width) """
             
             
 
@@ -186,8 +186,8 @@ class SiglentSDS3104X_DataAcquisition:
                 f.write(metadata)
                 df.to_csv(f, index=False)
             
-            print(f"数据已保存到: {filepath}")
-            print(f"文件大小: {os.path.getsize(filepath)} 字节")
+            """ print(f"数据已保存到: {filepath}")
+            print(f"文件大小: {os.path.getsize(filepath)} 字节") """
             return True
             
         except Exception as e:
@@ -203,14 +203,14 @@ class SiglentSDS3104X_DataAcquisition:
             
             # 执行单次触发
             self.scope.write('SINGLE')
-            print("等待触发...")
+            """ print("等待触发...") """
             
             # 等待采集完成
             time.sleep(2)
             
             # 检查触发状态
             trigger_status = self.scope.query('TRIG:STAT?')
-            print(f"触发状态: {trigger_status}")
+            """ print(f"触发状态: {trigger_status}") """
             
             return True
             
@@ -224,20 +224,20 @@ class SiglentSDS3104X_DataAcquisition:
             print("示波器未连接")
             return False
         
-        print("\n开始采集数据...")
+        """ print("\n开始采集数据...") """
         
         # 执行单次采集
         if not self.single_acquisition():
             return False
         
         # 采集通道1数据
-        print("\n采集通道1数据...")
+        """ print("\n采集通道1数据...") """
         ch1_data = self.acquire_channel_data(1)
         if ch1_data:
             self.save_to_csv(ch1_data,'./testdata')
         
         # 采集通道2数据
-        print("\n采集通道2数据...")
+        """ print("\n采集通道2数据...") """
         ch2_data = self.acquire_channel_data(2)
         if ch2_data:
             self.save_to_csv(ch2_data,'./testdata')
