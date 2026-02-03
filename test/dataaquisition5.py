@@ -228,13 +228,13 @@ class SiglentSDS3104X_DataAcquisition:
         print("\n采集通道1数据...")
         ch1_data = self.acquire_channel_data(1)
         if ch1_data:
-            self.save_to_csv(ch1_data)
+            self.save_to_csv(ch1_data,'./testdata')
         
         # 采集通道2数据
         print("\n采集通道2数据...")
         ch2_data = self.acquire_channel_data(2)
         if ch2_data:
-            self.save_to_csv(ch2_data)
+            self.save_to_csv(ch2_data,'./testdata')
         
         return ch1_data is not None and ch2_data is not None
     
