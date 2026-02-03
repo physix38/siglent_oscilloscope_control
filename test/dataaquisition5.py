@@ -97,7 +97,7 @@ class SiglentSDS3104X_DataAcquisition:
             data_bytes = raw_data[data_start:data_start + data_length]
             
             # 将字节数据转换为数值数组
-            # SDS3000X HD系列使用16位有符号整数
+            # SDS3000X HD系列使用8位有符号整数
             data_array = np.frombuffer(data_bytes, dtype=np.int8)
             
             # 获取波形参数以进行缩放
